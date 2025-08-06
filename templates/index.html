@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdaBoost Disease Predictor</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Disease Predictor</h1>
+            <p>Enter the patient's data below to predict the diagnosis using our AdaBoost model.</p>
+        </header>
+
+        <form class="prediction-form" action="/predict" method="post">
+            <!-- This grid now contains all 24 required input fields for your model -->
+            <div class="form-grid">
+                <!-- Row 1 -->
+                <div class="input-group">
+                    <label for="glucose">Glucose</label>
+                    <input type="number" id="glucose" name="glucose" placeholder="e.g., 0.73" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="cholesterol">Cholesterol</label>
+                    <input type="number" id="cholesterol" name="cholesterol" placeholder="e.g., 0.65" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 2 -->
+                <div class="input-group">
+                    <label for="hemoglobin">Hemoglobin</label>
+                    <input type="number" id="hemoglobin" name="hemoglobin" placeholder="e.g., 0.71" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="platelets">Platelets</label>
+                    <input type="number" id="platelets" name="platelets" placeholder="e.g., 0.86" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 3 -->
+                <div class="input-group">
+                    <label for="white_blood_cells">White Blood Cells</label>
+                    <input type="number" id="white_blood_cells" name="white_blood_cells" placeholder="e.g., 0.68" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="red_blood_cells">Red Blood Cells</label>
+                    <input type="number" id="red_blood_cells" name="red_blood_cells" placeholder="e.g., 0.52" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 4 -->
+                <div class="input-group">
+                    <label for="hematocrit">Hematocrit</label>
+                    <input type="number" id="hematocrit" name="hematocrit" placeholder="e.g., 0.29" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="mean_corpuscular_volume">Mean Corpuscular Volume</label>
+                    <input type="number" id="mean_corpuscular_volume" name="mean_corpuscular_volume" placeholder="e.g., 0.63" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 5 -->
+                <div class="input-group">
+                    <label for="mean_corpuscular_hemoglobin">Mean Corpuscular Hemoglobin</label>
+                    <input type="number" id="mean_corpuscular_hemoglobin" name="mean_corpuscular_hemoglobin" placeholder="e.g., 0.001" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="mchc">M.C.H.C.</label>
+                    <input type="number" id="mchc" name="mchc" placeholder="e.g., 0.79" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 6 -->
+                <div class="input-group">
+                    <label for="insulin">Insulin</label>
+                    <input type="number" id="insulin" name="insulin" placeholder="e.g., 0.50" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="bmi">BMI</label>
+                    <input type="number" id="bmi" name="bmi" placeholder="e.g., 0.21" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 7 -->
+                <div class="input-group">
+                    <label for="systolic_bp">Systolic Blood Pressure</label>
+                    <input type="number" id="systolic_bp" name="systolic_bp" placeholder="e.g., 0.51" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="diastolic_bp">Diastolic Blood Pressure</label>
+                    <input type="number" id="diastolic_bp" name="diastolic_bp" placeholder="e.g., 0.06" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 8 -->
+                <div class="input-group">
+                    <label for="triglycerides">Triglycerides</label>
+                    <input type="number" id="triglycerides" name="triglycerides" placeholder="e.g., 0.61" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="hba1c">HbA1c</label>
+                    <input type="number" id="hba1c" name="hba1c" placeholder="e.g., 0.93" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 9 -->
+                <div class="input-group">
+                    <label for="ldl_cholesterol">LDL Cholesterol</label>
+                    <input type="number" id="ldl_cholesterol" name="ldl_cholesterol" placeholder="e.g., 0.09" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="hdl_cholesterol">HDL Cholesterol</label>
+                    <input type="number" id="hdl_cholesterol" name="hdl_cholesterol" placeholder="e.g., 0.46" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 10 -->
+                <div class="input-group">
+                    <label for="alt">ALT</label>
+                    <input type="number" id="alt" name="alt" placeholder="e.g., 0.76" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="ast">AST</label>
+                    <input type="number" id="ast" name="ast" placeholder="e.g., 0.85" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 11 -->
+                <div class="input-group">
+                    <label for="heart_rate">Heart Rate</label>
+                    <input type="number" id="heart_rate" name="heart_rate" placeholder="e.g., 0.65" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="creatinine">Creatinine</label>
+                    <input type="number" id="creatinine" name="creatinine" placeholder="e.g., 0.81" required min="0" max="1" step="0.01">
+                </div>
+                <!-- Row 12 -->
+                <div class="input-group">
+                    <label for="troponin">Troponin</label>
+                    <input type="number" id="troponin" name="troponin" placeholder="e.g., 0.40" required min="0" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="c_reactive_protein">C-reactive Protein</label>
+                    <input type="number" id="c_reactive_protein" name="c_reactive_protein" placeholder="e.g., 0.77" required min="0" max="1" step="0.01">
+                </div>
+            </div>
+
+            <!-- Prediction result will be displayed here -->
+            {% if prediction_text %}
+            <div class="result-container">
+                <h3>{{ prediction_text }}</h3>
+            </div>
+            {% endif %}
+
+            <!-- Form action buttons -->
+            <div class="button-group">
+                <button type="button" id="clearForm" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+                <button type="submit" id="predictBtn" class="btn btn-primary" disabled>
+                    <span class="btn-text">
+                        <i class="fas fa-search-plus"></i> Predict
+                    </span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </div>
+        </form>
+         <footer>
+            <p>Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to predict, <kbd>Esc</kbd> to clear.</p>
+        </footer>
+    </div>
+
+    <!-- Link to your JavaScript file -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
